@@ -32,7 +32,7 @@ namespace ProjectOrganizer.DAL
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM department", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM department ORDER BY department_id", conn);
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -78,7 +78,7 @@ namespace ProjectOrganizer.DAL
 
                     cmd.ExecuteNonQuery();
 
-                    cmd = new SqlCommand("SELECT MAX(id) from department", conn);
+                    cmd = new SqlCommand("SELECT MAX(department_id) from department", conn);
                     id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 }
@@ -108,7 +108,8 @@ namespace ProjectOrganizer.DAL
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand("UPDATE department (name) SET(@name) WHERE (@id);", conn);
+                    SqlCommand cmd = new SqlCommand("UPDATE department SET name = @name WHERE department_id = @department_id;", conn);
+                    cmd.Parameters.AddWithValue("@department_id", updatedDepartment.Id);
                     cmd.Parameters.AddWithValue("@name", updatedDepartment.Name);
 
                    int rows = cmd.ExecuteNonQuery();
