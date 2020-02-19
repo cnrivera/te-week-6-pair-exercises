@@ -37,7 +37,7 @@ namespace ProjectOrganizerTests
         {
             // Arrange
             ProjectSqlDAO project = new ProjectSqlDAO(ConnectionString);
-
+        
             // Act
             bool isAdded = project.AssignEmployeeToProject(NewProjId, NewEmployeeId);
 
@@ -50,7 +50,6 @@ namespace ProjectOrganizerTests
         public void RemoveEmployeeFromAProjectTest()
         {
             // Arrange
-
 
             // Act
 
