@@ -17,6 +17,8 @@ namespace ProjectOrganizerTests
         /// Holds the newly generated dept id.
         /// </summary>
         protected int NewDeptId { get; private set; }
+        protected int NewProjId { get; private set; }
+        protected int NewEmployeeId { get; private set; }
 
         /// <summary>
         /// The transaction for each test.
@@ -46,6 +48,8 @@ namespace ProjectOrganizerTests
                 if (reader.Read())
                 {
                     this.NewDeptId = Convert.ToInt32(reader["newDeptId"]);
+                    this.NewProjId = Convert.ToInt32(reader["newProjId"]);
+                    this.NewEmployeeId = Convert.ToInt32(reader["newEmployeeId"]);
                 }
             }
 

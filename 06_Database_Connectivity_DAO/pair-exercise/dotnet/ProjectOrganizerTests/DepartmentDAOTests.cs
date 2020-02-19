@@ -16,7 +16,7 @@ namespace ProjectOrganizerTests
 
         
         [TestMethod]
-        public void GetDepartmentsTest()
+        public void GetDepartmentTest()
         {
             // Arrange
 
@@ -47,6 +47,27 @@ namespace ProjectOrganizerTests
             int endCount = GetRowCount("department");
             // Assert
             Assert.AreEqual(startCount + 1, endCount);
+        }
+
+
+        [DataTestMethod]
+        
+        
+        public void UpdateDeptTest()
+        {
+            
+            Department department = new Department();
+            department.Name = "strategy";
+            department.Id = NewDeptId;
+
+            DepartmentSqlDAO dept = new DepartmentSqlDAO(ConnectionString);
+
+            bool isSuccessful = dept.UpdateDepartment(department);
+            Assert.AreEqual(true , isSuccessful);
+
+           
+
+
         }
     }
 }
