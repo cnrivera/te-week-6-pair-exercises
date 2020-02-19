@@ -50,10 +50,13 @@ namespace ProjectOrganizerTests
         public void RemoveEmployeeFromAProjectTest()
         {
             // Arrange
-
+            ProjectSqlDAO project = new ProjectSqlDAO(ConnectionString);
+          
             // Act
+            bool isRemoved = project.RemoveEmployeeFromProject(NewProjId, NewEmployeeId2);
 
             // Assert
+            Assert.AreEqual(true, isRemoved);
         }
 
         [TestMethod]

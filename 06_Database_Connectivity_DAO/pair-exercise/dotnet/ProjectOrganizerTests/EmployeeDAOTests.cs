@@ -27,7 +27,7 @@ namespace ProjectOrganizerTests
             IList<Employee> employees = employee.GetAllEmployees();
 
             // Assert
-            Assert.AreEqual(1, employees.Count);
+            Assert.AreEqual(2, employees.Count);
 
         }
 
