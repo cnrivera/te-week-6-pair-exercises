@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace Capstone.DAL
 {
-    class ParkSqlDAO : IParkDAO
+    public class ParkSqlDAO : IParkDAO
     {
         private string connectionString;
 

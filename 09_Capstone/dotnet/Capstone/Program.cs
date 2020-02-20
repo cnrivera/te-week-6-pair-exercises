@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using Capstone.DAL;
+using Capstone.Models;
+using System.Collections.Generic;
 
 namespace Capstone
 {
@@ -19,11 +21,17 @@ namespace Capstone
             string connectionString = configuration.GetConnectionString("campground-tiny");
 
             IParkDAO parkDAO = new ParkSqlDAO(connectionString);
-            //IReservationDAO reservationDAO = new ReservationSqlDAO(connectionString);
-            //ISiteDAO siteDAO = new SiteSqlDAO(connectionString);
-            //ICampgroundDAO campgroundDAO = new CampgroundSqlDAO(connectionString);
+            IReservationDAO reservationDAO = new ReservationSqlDAO(connectionString);
+            ISiteDAO siteDAO = new SiteSqlDAO(connectionString);
+            ICampgroundDAO campgroundDAO = new CampgroundSqlDAO(connectionString);
 
-            Console.WriteLine(parkDAO.ViewAvailableParks());
+
+            MenuCLI newMenu = new MenuCLI(parkDAO, siteDAO, campgroundDAO, reservationDAO);
+
+            
+
+
+
         }
     }
 }

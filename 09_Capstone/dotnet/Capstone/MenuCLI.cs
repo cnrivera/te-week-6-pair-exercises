@@ -19,16 +19,67 @@ namespace Capstone
             this.siteDAO = siteDAO;
             this.campgroundDAO = campgroundDAO;
             this.reservationDAO = reservationDAO;
+
+            RunMenu();
         }
 
-        public void ViewAvailableParksList()
+        public void RunMenu()
         {
-            IList<Park> parkList = parkDAO.ViewAvailableParks();
-            foreach (Park park in parkList)
+
+            PrintMenu();
+            
+
+
+
+            string input = Console.ReadLine().ToUpper();
+           
             {
-                
+                IList<Park> parkSelection = parkDAO.ViewAvailableParks();
+                Console.Clear();
+                for (int i = 0; i < parkSelection.Count; i++)
+
+                    if (input == (i + 1).ToString())
+                    {
+                        Console.WriteLine("Park Information Screen");
+                        Console.WriteLine(parkSelection[i].Name + " National Park");
+                        Console.WriteLine("Location: " + parkSelection[i].Location);
+                        Console.WriteLine("Established: " +parkSelection[i].EstablishDate);
+                        Console.WriteLine("Area: " + parkSelection[i].Area + " sq km");
+                        Console.WriteLine("Annual Visitors: " + parkSelection[i].Visitors);
+                        Console.WriteLine();
+                        Console.WriteLine(parkSelection[i].Description);
+                        break;
+                    }
+                    if (input == "Q")
+                    {
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid selection. Please choose from the above options.");
+                        Console.WriteLine();
+                        RunMenu();
+                    }
             }
+
+
         }
+
+
+        public void PrintMenu()
+        {
+            Console.WriteLine("Select a park for further details:");
+
+            IList<Park> parkList = parkDAO.ViewAvailableParks();
+            for (int i = 0; i < parkList.Count; i++)
+            {
+                Console.WriteLine(i + 1 + ") " + parkList[i].Name);
+            }
+            
+            Console.WriteLine("Q) Quit");
+        }
+
+
     }
 
 
