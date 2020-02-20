@@ -33,7 +33,7 @@ namespace ProjectOrganizerTests
 
 
         [TestMethod]
-        public void SearchForEmployeeTest()
+        public void GetEmployeesWithoutProjectsTest()
         {
             // Arrange
             EmployeeSqlDAO employee = new EmployeeSqlDAO(ConnectionString);
@@ -46,7 +46,7 @@ namespace ProjectOrganizerTests
            
         }
         [TestMethod]
-        public void GetEmployeesWithoutProjectsTest()
+        public void SearchForEmployeeTest()
         {
             // Arrange
             EmployeeSqlDAO employee = new EmployeeSqlDAO(ConnectionString);
