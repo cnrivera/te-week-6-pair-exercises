@@ -11,6 +11,6 @@ namespace Capstone.DAL
         /// Returns a list of all campgrounds.
         /// </summary>
         /// <returns></returns>
-        IList<Campground> ReadToListCampground();
+        IList<Campground> ReadToListCampground(int parkid);
     }
 }

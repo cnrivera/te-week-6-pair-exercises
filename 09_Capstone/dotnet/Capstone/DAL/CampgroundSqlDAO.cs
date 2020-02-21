@@ -16,7 +16,7 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Campground> ReadToListCampground()
+        public IList<Campground> ReadToListCampground(int parkid)
         {
             List<Campground> campgrounds = new List<Campground>();
             try
@@ -25,7 +25,7 @@ namespace Capstone.DAL
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM campground ORDER BY name", conn);
+                    SqlCommand cmd = new SqlCommand($"SELECT * FROM campground WHERE park_id = {parkid}  ORDER BY name", conn);
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
