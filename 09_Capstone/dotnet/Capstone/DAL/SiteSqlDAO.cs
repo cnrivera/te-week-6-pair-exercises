@@ -25,7 +25,7 @@ namespace Capstone.DAL
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * from site LEFT JOIN reservation ON reservation.site_id = site.site_id AND (@inputEndDate < from_date OR @inputStartDate > to_date) WHERE campground_id = @campgroundID ORDER BY reservation.from_date", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT * from site JOIN reservation ON reservation.site_id = site.site_id AND campground_id = campgroundID WHERE reservation.site_id NOT IN (SELECT site_id FROM reservation WHERE from_date <= inputEndDate AND to_date >= inputStartDate) ", conn);
 
                     cmd.Parameters.AddWithValue("@inputStartDate", inputStartDate);
                     cmd.Parameters.AddWithValue("@inputEndDate", inputEndDate);
