@@ -17,7 +17,7 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Reservation> ReadToListReservation()
+        public IList<Reservation> ReadToListReservation(int campgroundId, DateTime inputStartDate, DateTime inputEndDate)
         {
             List<Reservation> reservations = new List<Reservation>();
             try
@@ -25,9 +25,12 @@ namespace Capstone.DAL
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+                    
+                    
+                    SqlCommand cmd = new SqlCommand("SELECT * from site LEFT JOIN reservation ON reservation.site_id = site.site_id ORDER BY reservation.from_date", conn);
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM reservation ORDER BY name", conn);
-
+                    
+                    
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -39,9 +42,14 @@ namespace Capstone.DAL
                         reserve.FromDate = Convert.ToDateTime(reader["from_date"]);
                         reserve.ToDate = Convert.ToDateTime(reader["to_date"]);
                         reserve.CreateDate = Convert.ToDateTime(reader["create_date"]);
-                       
 
                         reservations.Add(reserve);
+
+                        
+
+                        
+                       
+                        
                     }
                 }
             }

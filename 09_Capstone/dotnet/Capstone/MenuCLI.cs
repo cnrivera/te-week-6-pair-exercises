@@ -13,12 +13,15 @@ namespace Capstone
         private ICampgroundDAO campgroundDAO;
         private IReservationDAO reservationDAO;
         
-        // **Set variables for selected
         private int selectedParkId;
         private int selectedSiteId;
         private int selectedCampgroundId;
         private string selectedParkName;
-        
+        private DateTime inputStartDate;
+        private DateTime inputEndDate;
+        private string selectedCampgroundName;
+        private decimal selectedCampgroundCost;
+
 
         public MenuCLI(IParkDAO parkDAO, ISiteDAO siteDAO, ICampgroundDAO campgroundDAO, IReservationDAO reservationDAO)
         {
@@ -33,46 +36,18 @@ namespace Capstone
         public void RunMenu()
         {
 
-            PrintMenu();
-            
-            string input = Console.ReadLine().ToUpper();
-            
-            IList<Park> parkSelection = parkDAO.ViewAvailableParks();
-            Console.Clear();
+            PrintParkMenu();
 
-            if (input == "Q")
-            {
-                Environment.Exit(0);
-            }
-            else 
-            {
-            // ** changed order of menu and set up pInput for parsed int input
-                // do error checking here - try/catch on parse?
-                int pInput = int.Parse(input) - 1;
-            
-                selectedParkId = parkSelection[pInput].ParkId;
-                selectedParkName = parkSelection[pInput].Name;
-                Console.WriteLine("Park Information Screen");
-                Console.WriteLine(parkSelection[pInput].Name + " National Park");
-                Console.WriteLine("Location: " + parkSelection[pInput].Location);
-                Console.WriteLine("Established: " +parkSelection[pInput].EstablishDate);
-                Console.WriteLine("Area: " + parkSelection[pInput].Area + " sq km");
-                Console.WriteLine("Annual Visitors: " + parkSelection[pInput].Visitors);
-                Console.WriteLine();
-                Console.WriteLine(parkSelection[pInput].Description);
-                
-            }
-
+            RunParkMenu();
 
             PrintCampgroundMenu();
             
             RunCampgroundMenu();
 
-
         }
 
 
-        public void PrintMenu()
+        public void PrintParkMenu()
         {
             selectedParkId = 0;
             selectedParkName = "";
@@ -87,6 +62,49 @@ namespace Capstone
             Console.WriteLine("Q) Quit");
         }
 
+        public void RunParkMenu()
+        {
+
+            string input = Console.ReadLine().ToUpper();
+
+            IList<Park> parkSelection = parkDAO.ViewAvailableParks();
+            Console.Clear();
+
+            if (input == "Q")
+            {
+                Environment.Exit(0);
+            }
+            else
+            {
+
+                try
+                {
+                int pInput = int.Parse(input) - 1;
+
+                selectedParkId = parkSelection[pInput].ParkId;
+                selectedParkName = parkSelection[pInput].Name;
+                Console.WriteLine("Park Information Screen");
+                Console.WriteLine(parkSelection[pInput].Name + " National Park");
+                Console.WriteLine("Location: " + parkSelection[pInput].Location);
+                Console.WriteLine("Established: " + parkSelection[pInput].EstablishDate);
+                Console.WriteLine("Area: " + parkSelection[pInput].Area + " sq km");
+                Console.WriteLine("Annual Visitors: " + parkSelection[pInput].Visitors);
+                Console.WriteLine();
+                Console.WriteLine(parkSelection[pInput].Description);
+                }
+                //figure out how to go back to first menu without running next menu
+                
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not read input; please try again");
+                    Console.WriteLine(ex.Message);
+                    PrintParkMenu();
+                }
+
+            }
+        }
+
+
         public void PrintCampgroundMenu()
         {
             Console.WriteLine("Select a Command");
@@ -95,8 +113,6 @@ namespace Capstone
             Console.WriteLine("\t3) Return to Previous Menu");
         }
 
-        // ** added new selectedParkId parameter to ReadToListCampground in CampgroundSqlDAO
-        // ** added additional line at top
         public void ViewCampgrounds()
         {
             IList<Campground> campInfo = campgroundDAO.ReadToListCampground(selectedParkId);
@@ -125,9 +141,10 @@ namespace Capstone
                     ViewCampgrounds();
                     break;
 
-                case "2":
 
-                    break;
+                case "2":
+                    SearchReservations();
+                    break; 
 
                 case "3":
                     RunMenu();
@@ -139,6 +156,58 @@ namespace Capstone
 
 
 
+
+            }
+
+        }
+
+        public void SearchReservations()
+        {
+            Console.WriteLine("Select a Command");
+            Console.WriteLine("1)\tSearch for Available Reservations");
+            Console.WriteLine("2)\tReturn to Previous Screen");
+            string input = Console.ReadLine();
+
+            if (input == "2") 
+            {
+                //return to menu
+            }
+            else if (input == "1")
+            {
+
+                //Search for Available Reservation 
+                ViewCampgrounds();
+                Console.WriteLine("Which campground(enter 0 to cancel) ?");
+                string inputCampground = Console.ReadLine();
+                IList<Campground> campInfo = campgroundDAO.ReadToListCampground(selectedParkId);
+                try
+                {
+                    int pInputCampground = int.Parse(inputCampground) - 1;
+
+                    selectedCampgroundId = campInfo[pInputCampground].CampgroundId;
+                    selectedCampgroundName = campInfo[pInputCampground].Name;
+                    selectedCampgroundCost = campInfo[pInputCampground].DailyFee;
+                }
+                
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not read input; please try again");
+                    Console.WriteLine(ex.Message);
+                    //get back to right place
+                }
+
+                Console.WriteLine("What is the arrival date ? mm / dd / yyyy");
+                inputStartDate = Convert.ToDateTime(Console.ReadLine());
+                Console.WriteLine("What is the departure date ? mm / dd / yyyy");
+                inputEndDate = Convert.ToDateTime(Console.ReadLine());
+
+                IList<Site> siteAvailList = siteDAO.ReadToListSite(selectedCampgroundId, inputStartDate, inputEndDate);
+                Console.WriteLine("Results Matching Your Search Criteria");
+                Console.WriteLine("Campground\tSiteNo.\tMax Occup.\tAccessible?\tRV Length\tUtilities Available?\tDaily Cost");
+                foreach (Site slot in siteAvailList)
+                {
+                    Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + selectedCampgroundCost);
+                }
 
             }
 
