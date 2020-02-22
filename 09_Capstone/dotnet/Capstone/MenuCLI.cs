@@ -21,6 +21,8 @@ namespace Capstone
         private DateTime inputEndDate;
         private string selectedCampgroundName;
         private decimal selectedCampgroundCost;
+        private int inputSiteReserve;
+        private string inputNameReserve;
 
 
         public MenuCLI(IParkDAO parkDAO, ISiteDAO siteDAO, ICampgroundDAO campgroundDAO, IReservationDAO reservationDAO)
@@ -170,7 +172,7 @@ namespace Capstone
 
             if (input == "2") 
             {
-                //return to menu
+                SearchReservations();
             }
             else if (input == "1")
             {
@@ -199,14 +201,37 @@ namespace Capstone
                 Console.WriteLine("What is the arrival date ? mm / dd / yyyy");
                 inputStartDate = Convert.ToDateTime(Console.ReadLine());
                 Console.WriteLine("What is the departure date ? mm / dd / yyyy");
+                
                 inputEndDate = Convert.ToDateTime(Console.ReadLine());
 
                 IList<Site> siteAvailList = siteDAO.ReadToListSite(selectedCampgroundId, inputStartDate, inputEndDate);
                 Console.WriteLine("Results Matching Your Search Criteria");
-                Console.WriteLine("Campground\tSiteNo.\tMax Occup.\tAccessible?\tRV Length\tUtilities Available?\tDaily Cost");
-                foreach (Site slot in siteAvailList)
+                if (siteAvailList.Count==0)
                 {
-                    Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + selectedCampgroundCost);
+                    Console.WriteLine("No sites are available for your dates.");
+                    
+                }
+                else { 
+
+                        Console.WriteLine("Campground\tSiteNo.\tMax Occup.\tAccessible?\tRV Length\tUtilities Available?\tDaily Cost");
+                        foreach (Site slot in siteAvailList)
+                        {
+                            Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + selectedCampgroundCost);
+                        }
+
+                        Console.WriteLine("Which site should be reserved? Enter site number or enter 0 to cancel");
+                        // do error checking on input here    
+                        // make input correspond to the actual site
+                        inputSiteReserve = Convert.ToInt32(Console.ReadLine());
+                        if (inputSiteReserve == 0)
+                        {
+                            // exit
+                        }
+                        else
+                        {
+                            Console.WriteLine("What name should the reservation be made under?");
+                            inputNameReserve = (Console.ReadLine());
+                        }
                 }
 
             }
