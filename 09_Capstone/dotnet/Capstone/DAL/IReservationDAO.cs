@@ -8,9 +8,11 @@ namespace Capstone.DAL
     interface IReservationDAO
     {
         /// <summary>
-        /// Returns a list of available reservations.
+        /// Adds a reservation to the database.
         /// </summary>
         /// <returns></returns>
-        IList<Reservation> ReadToListReservation(int campgroundId, DateTime inputStartDate, DateTime inputEndDate);
+        int AddReservation(string inputNameReserve, int inputSiteReserve, DateTime inputStartDate, DateTime inputEndDate);
+
+      
     }
 }

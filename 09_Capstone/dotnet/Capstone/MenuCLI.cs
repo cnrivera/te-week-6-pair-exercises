@@ -143,7 +143,6 @@ namespace Capstone
                     ViewCampgrounds();
                     break;
 
-
                 case "2":
                     SearchReservations();
                     break; 
@@ -219,7 +218,8 @@ namespace Capstone
                             Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + selectedCampgroundCost);
                         }
 
-                        Console.WriteLine("Which site should be reserved? Enter site number or enter 0 to cancel");
+                        Console.Write("Which site should be reserved? Enter site number or enter 0 to cancel: ");
+                     
                         // do error checking on input here    
                         // make input correspond to the actual site
                         inputSiteReserve = Convert.ToInt32(Console.ReadLine());
@@ -232,6 +232,20 @@ namespace Capstone
                             Console.WriteLine("What name should the reservation be made under?");
                             inputNameReserve = (Console.ReadLine());
                         }
+
+                    int id = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
+
+                    //IList<Reservation> reservationMade = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
+
+                    if (id != 0)
+                    {
+                        Console.WriteLine($"The reservation has been made, and the confirmation id is {id}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Reservation unsuccessful.");
+                        //option to go back
+                    }
                 }
 
             }

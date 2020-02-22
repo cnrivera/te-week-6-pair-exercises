@@ -17,52 +17,44 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Reservation> ReadToListReservation(int campgroundId, DateTime inputStartDate, DateTime inputEndDate)
+        public int AddReservation(string inputNameReserve, int inputSiteReserve, DateTime inputStartDate, DateTime inputEndDate)
         {
-            List<Reservation> reservations = new List<Reservation>();
+           
+            int id = 0;
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    
-                    
-                    SqlCommand cmd = new SqlCommand("SELECT * from site LEFT JOIN reservation ON reservation.site_id = site.site_id ORDER BY reservation.from_date", conn);
 
-                    
-                    
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        Reservation reserve = new Reservation();
+                    SqlCommand cmd = new SqlCommand("INSERT INTO reservation (site_id, name, from_date, to_date, create_date)VALUES (@inputSiteReserve, @inputNameReserve, @inputStartDate, @inputEndDate, GetDate())", conn);
 
-                        reserve.ReservationId = Convert.ToInt32(reader["reservation_id"]);
-                        reserve.SiteId = Convert.ToInt32(reader["site_id"]);
-                        reserve.Name = Convert.ToString(reader["name"]);
-                        reserve.FromDate = Convert.ToDateTime(reader["from_date"]);
-                        reserve.ToDate = Convert.ToDateTime(reader["to_date"]);
-                        reserve.CreateDate = Convert.ToDateTime(reader["create_date"]);
+                    cmd.Parameters.AddWithValue("@inputStartDate", inputStartDate);
+                    cmd.Parameters.AddWithValue("@inputEndDate", inputEndDate);
+                    cmd.Parameters.AddWithValue("@inputNameReserve", inputNameReserve);
+                    cmd.Parameters.AddWithValue("@inputSiteReserve", inputSiteReserve);
 
-                        reservations.Add(reserve);
+                    cmd.ExecuteNonQuery();
 
-                        
+                    cmd = new SqlCommand("SELECT MAX(reservation_id) from reservation", conn);
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
 
-                        
-                       
-                        
-                    }
                 }
             }
-
-
             catch (SqlException ex)
             {
 
                 Console.WriteLine("Error getting reservations");
                 Console.WriteLine("The error was: " + ex.Message);
             }
-
-            return reservations;
+            return id;
         }
+
+   
     }
+
+
+   
 }
+
+
