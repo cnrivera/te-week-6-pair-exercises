@@ -121,7 +121,14 @@ namespace Capstone
                 Console.WriteLine(i + 1 + campInfo[i].Name + " " + campInfo[i].OpenFrom + " " + campInfo[i].OpenTo + " " + campInfo[i].DailyFee);
             }
             Console.WriteLine();
-            SearchReservations();
+            
+        }
+
+        public void CampgroundsWithMenu ()
+        {
+            ViewCampgrounds();
+            PrintCampgroundMenu();
+            RunCampgroundMenu();
         }
 
         public void RunCampgroundMenu()
@@ -136,7 +143,7 @@ namespace Capstone
             switch (input)
             {
                 case "1":
-                    ViewCampgrounds();
+                    CampgroundsWithMenu();
                     break;
 
                 case "2":
