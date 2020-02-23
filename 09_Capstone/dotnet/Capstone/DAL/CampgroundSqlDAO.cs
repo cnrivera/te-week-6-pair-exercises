@@ -8,7 +8,7 @@ namespace Capstone.DAL
 {
     public class CampgroundSqlDAO : ICampgroundDAO
     {
-        private string connectionString;
+        private readonly string connectionString;
 
         // Single Parameter Constructor
         public CampgroundSqlDAO(string dbConnectionString)
@@ -30,14 +30,15 @@ namespace Capstone.DAL
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        Campground camp = new Campground();
-
-                        camp.CampgroundId = Convert.ToInt32(reader["campground_id"]);
-                        camp.ParkId = Convert.ToInt32(reader["park_id"]);
-                        camp.Name = Convert.ToString(reader["name"]);
-                        camp.OpenFrom = Convert.ToInt32(reader["open_from_mm"]);
-                        camp.OpenTo = Convert.ToInt32(reader["open_to_mm"]);
-                        camp.DailyFee = Convert.ToDecimal(reader["daily_fee"]);
+                        Campground camp = new Campground
+                        {
+                            CampgroundId = Convert.ToInt32(reader["campground_id"]),
+                            ParkId = Convert.ToInt32(reader["park_id"]),
+                            Name = Convert.ToString(reader["name"]),
+                            OpenFrom = Convert.ToInt32(reader["open_from_mm"]),
+                            OpenTo = Convert.ToInt32(reader["open_to_mm"]),
+                            DailyFee = Convert.ToDecimal(reader["daily_fee"])
+                        };
 
                         campgrounds.Add(camp);
                     }

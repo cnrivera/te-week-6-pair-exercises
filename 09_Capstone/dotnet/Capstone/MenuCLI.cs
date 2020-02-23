@@ -7,10 +7,10 @@ namespace Capstone
 {
     class MenuCLI
     {
-        private IParkDAO parkDAO;
-        private ISiteDAO siteDAO;
-        private ICampgroundDAO campgroundDAO;
-        private IReservationDAO reservationDAO;
+        private readonly IParkDAO parkDAO;
+        private readonly ISiteDAO siteDAO;
+        private readonly ICampgroundDAO campgroundDAO;
+        private readonly IReservationDAO reservationDAO;
 
         private string parkInput;
         private int selectedParkId;
@@ -150,11 +150,7 @@ namespace Capstone
             Console.WriteLine("\t1) View Campgrounds");
             Console.WriteLine("\t2) Search for Reservation");
             Console.WriteLine("\t3) Return to Previous Menu");
-
-            const string viewCampgrounds = "1";
-            const string searchReservations = "2";
-            const string previousString = "3";
-
+           
             string input = Console.ReadLine();
 
 
@@ -212,8 +208,6 @@ namespace Capstone
             {
                 RunParkMenu();
             }
-
-            IList<Campground> campgrounds = campgroundDAO.ReadToListCampground(selectedParkId);
             try
             {
                 int pInputCampground = int.Parse(inputCampground) - 1;
@@ -223,7 +217,7 @@ namespace Capstone
                 selectedCampgroundCost = campInfo[pInputCampground].DailyFee;
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 Console.WriteLine("Not a valid campground; please press any key to try again");
@@ -266,7 +260,7 @@ namespace Capstone
             {
 
                 Console.WriteLine("No sites are available for your dates. Would you like to enter alternate dates? Y/N");
-                string yesOrNo = "";
+                string yesOrNo;
                 bool isValid = false;
 
                 do
