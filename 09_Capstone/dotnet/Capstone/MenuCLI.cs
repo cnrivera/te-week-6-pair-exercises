@@ -232,12 +232,32 @@ namespace Capstone
 
             }
 
-            inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
-            inputEndDate = CLIHelper.GetDate("What is the departure date ? mm / dd / yyyy");
+            bool datesAreValid = false;
+            while (!datesAreValid) 
+            { 
+                inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
+                inputEndDate = CLIHelper.GetDate("What is the departure date ? mm / dd / yyyy");
 
-            // Calculate number of days for reservation
-            numDays = inputEndDate.Subtract(inputStartDate);
-            intDays = numDays.TotalDays;
+                // Calculate number of days for reservation
+                numDays = inputEndDate.Subtract(inputStartDate);
+                intDays = numDays.TotalDays;
+                if (inputStartDate < DateTime.Now)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Arrival/departure dates must be in the future. We do not have time traveling capabilities.\nPlease enter new dates.");
+                }
+                else if (intDays < 1)
+                {
+                    Console.WriteLine("Departure date must be after arrival date. We do not have time traveling capabilities.\nPlease enter new dates.");
+                }
+                else
+                {
+                    datesAreValid = true;
+                }
+            }
+
+
+
 
             // Display results matching search
             IList<Site> siteAvailList = siteDAO.ReadToListSite(selectedCampgroundId, inputStartDate, inputEndDate);
