@@ -8,6 +8,28 @@ namespace Capstone
 {
     public class CLIHelper
     {
+        public static DateTime GetDate(string message)
+        {
+            string userInput = String.Empty;
+            DateTime dateValue;
+            int numberOfAttempts = 0;
+
+            do
+            {
+                if (numberOfAttempts > 0)
+                {
+                    Console.WriteLine("Invalid date format. Please try again");
+                }
+
+                Console.Write(message + " ");
+                userInput = Console.ReadLine();
+                numberOfAttempts++;
+            }
+            while (!DateTime.TryParse(userInput, out dateValue));
+
+            return dateValue;
+
+        }
         public static int GetInteger(string message)
         {
             string userInput = String.Empty;

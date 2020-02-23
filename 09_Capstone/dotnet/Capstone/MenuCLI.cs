@@ -36,16 +36,16 @@ namespace Capstone
             RunMenu();
         }
 
+        // Start main menu
         public void RunMenu()
         {
             RunParkMenu();
-
-            PrintCampgroundMenu();
 
             RunCampgroundMenu();
         }
 
 
+        // // Create menu of available parks 
         public void RunParkMenu()
         {
             selectedParkId = 0;
@@ -60,51 +60,13 @@ namespace Capstone
             Console.WriteLine("Q) Quit");
 
            parkInput = Console.ReadLine().ToUpper();
-            DisplayParkInfo(parkInput);
-            
-
-            //IList<Park> parkSelection = parkDAO.ViewAvailableParks();
-            //Console.Clear();
-
-            //if (input == "Q")
-            //{
-            //    Environment.Exit(0);
-            //}
-            //else
-            //{
-
-            //    try
-            //    {
-            //        int pInput = int.Parse(input) - 1;
-
-            //        selectedParkId = parkSelection[pInput].ParkId;
-            //        selectedParkName = parkSelection[pInput].Name;
-            //        Console.WriteLine("Park Information Screen");
-            //        Console.WriteLine();
-            //        Console.WriteLine(parkSelection[pInput].Name + " National Park");
-            //        Console.WriteLine("Location: " + parkSelection[pInput].Location);
-            //        Console.WriteLine("Established: " + parkSelection[pInput].EstablishDate);
-            //        Console.WriteLine("Area: " + parkSelection[pInput].Area + " sq km");
-            //        Console.WriteLine("Annual Visitors: " + parkSelection[pInput].Visitors);
-            //        Console.WriteLine();
-            //        Console.WriteLine(parkSelection[pInput].Description);
-            //        Console.WriteLine();
-            //    }
-
-
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("Could not read input; please try again");
-            //        Console.WriteLine();
-            //        Console.WriteLine(ex.Message);
-
-            //    }
-
+           DisplayParkInfo(parkInput);
         }
 
-
+        // Display details for selected park
         public void DisplayParkInfo(string parkInput)
         {
+            
             IList<Park> parkSelection = parkDAO.ViewAvailableParks();
             Console.Clear();
 
@@ -145,14 +107,7 @@ namespace Capstone
             }
         }
 
-        public void PrintCampgroundMenu()
-        {
-            //Console.WriteLine("Select a Command");
-            //Console.WriteLine("\t1) View Campgrounds");
-            //Console.WriteLine("\t2) Search for Reservation");
-            //Console.WriteLine("\t3) Return to Previous Menu");
-        }
-
+        // View campgrounds for selected park
         public void ViewCampgrounds()
         {
             Console.Clear();
@@ -167,10 +122,15 @@ namespace Capstone
             }
             Console.WriteLine();
 
-            Console.WriteLine("Select a Command");
-            Console.WriteLine("1)\tSearch for Available Reservations");
-            Console.WriteLine("2)\tReturn to Previous Menu");
-            string input = Console.ReadLine();
+            // Run submenu
+            string input = "";
+            while (input != "1" && input !="2") 
+            { 
+                Console.WriteLine("Select a Command (1 or 2)");
+                Console.WriteLine("1)\tSearch for Available Reservations");
+                Console.WriteLine("2)\tReturn to Previous Menu");
+                input = CLIHelper.GetString("");
+            }
 
             if (input == "2")
             {
@@ -186,6 +146,7 @@ namespace Capstone
 
         }
 
+        // Menu for selected park 
         public void RunCampgroundMenu()
         {
             Console.WriteLine("Select a Command");
@@ -228,6 +189,7 @@ namespace Capstone
 
         }
 
+        // Search for and/or make site reservations
         public void SearchReservations()
         {
             selectedCampgroundId = 0;
@@ -272,14 +234,14 @@ namespace Capstone
                 //get back to right place
             }
 
-            Console.WriteLine("What is the arrival date ? mm / dd / yyyy");
-            inputStartDate = Convert.ToDateTime(Console.ReadLine());
-            Console.WriteLine("What is the departure date ? mm / dd / yyyy");
+            inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
+            inputEndDate = CLIHelper.GetDate("What is the departure date ? mm / dd / yyyy");
 
-            inputEndDate = Convert.ToDateTime(Console.ReadLine());
+            // Calculate number of days for reservation
             numDays = inputEndDate.Subtract(inputStartDate);
             intDays = numDays.TotalDays;
 
+            // Display results matching search
             IList<Site> siteAvailList = siteDAO.ReadToListSite(selectedCampgroundId, inputStartDate, inputEndDate);
             Console.WriteLine("Results Matching Your Search Criteria");
             if (siteAvailList.Count == 0)
@@ -326,19 +288,15 @@ namespace Capstone
                     Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + campTotal);
                 }
 
-                Console.Write("Which site should be reserved? Enter site number or 0 to quit: ");
+                inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number or 0 to start over: ");
 
-                // do error checking on input here    
-                // make input correspond to the actual site
-                inputSiteReserve = Convert.ToInt32(Console.ReadLine());
                 if (inputSiteReserve == 0)
                 {
-                    Environment.Exit(0);
+                    SearchReservations();
                 }
                 else
                 {
-                    Console.WriteLine("What name should the reservation be made under?");
-                    inputNameReserve = (Console.ReadLine());
+                    inputNameReserve = CLIHelper.GetString("What name should the reservation be made under?");
                 }
 
                 int id = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
