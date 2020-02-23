@@ -210,6 +210,8 @@ namespace Capstone
                 Console.WriteLine(i + 1 + campInfo[i].Name + " " + campInfo[i].OpenFrom + " " + campInfo[i].OpenTo + " " + campInfo[i].DailyFee);
             }
             Console.WriteLine();
+
+            
             string inputCampground = CLIHelper.GetString("Select a campground (enter Q to quit)");
 
             if (inputCampground.ToUpper() == "Q")
@@ -229,9 +231,11 @@ namespace Capstone
 
             catch (Exception ex)
             {
-                Console.WriteLine("Could not read input; please try again");
-                Console.WriteLine(ex.Message);
-                //get back to right place
+                
+                Console.WriteLine("Not a valid campground; please press any key to try again");
+                Console.ReadLine();
+                SearchReservations();
+ 
             }
 
             inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
@@ -288,21 +292,35 @@ namespace Capstone
                     Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + campTotal);
                 }
 
-                inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number or 0 to start over: ");
+                // check input against site numbers in the list
 
 
-                if (inputSiteReserve == 0)
+                bool inputInvalid = true; 
+                while (inputInvalid)
                 {
-                    SearchReservations();
-                }
-                else
-                {
-                    inputNameReserve = CLIHelper.GetString("What name should the reservation be made under?");
-                }
-
+                    inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number or 0 to start over: ");
+                    if (inputSiteReserve == 0)
+                    {
+                        SearchReservations();
+                        break;
+                    }
+                    else
+                    {
+                        foreach (Site slot in siteAvailList)
+                        {
+                            if (slot.SiteNumber == inputSiteReserve)
+                            {
+                                inputInvalid = false;
+                                break;
+                            }
+                        }
+                    }
+                }              
+                
+                inputNameReserve = CLIHelper.GetString("What name should the reservation be made under?");
+                
+                // Add reservation
                 int id = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
-
-                //IList<Reservation> reservationMade = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
 
                 if (id != 0)
                 {
