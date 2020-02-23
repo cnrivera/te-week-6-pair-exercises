@@ -126,7 +126,7 @@ namespace Capstone
             string input = "";
             while (input != "1" && input != "2")
             {
-                Console.WriteLine("Select a Command (1 or 2)");
+                Console.WriteLine("Select a Command");
                 Console.WriteLine("1)\tSearch for Available Reservations");
                 Console.WriteLine("2)\tReturn to Previous Menu");
                 input = CLIHelper.GetString("");
