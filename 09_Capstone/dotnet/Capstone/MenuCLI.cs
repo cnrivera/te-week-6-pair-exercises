@@ -33,16 +33,11 @@ namespace Capstone
             this.campgroundDAO = campgroundDAO;
             this.reservationDAO = reservationDAO;
 
-            RunMenu();
-        }
-
-        // Start main menu
-        public void RunMenu()
-        {
+            // Start main menu
             RunParkMenu();
-
-            RunCampgroundMenu();
         }
+
+     
 
 
         // // Create menu of available parks 
@@ -94,17 +89,20 @@ namespace Capstone
                     Console.WriteLine();
                     Console.WriteLine(parkSelection[pInput].Description);
                     Console.WriteLine();
+                    RunCampgroundMenu();
                 }
 
 
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Could not read input; please try again");
+                    Console.WriteLine(ex.Message); 
+                    Console.WriteLine("Could not read input. Please try again.");
                     Console.WriteLine();
-                    Console.WriteLine(ex.Message);
+                    RunParkMenu();
 
                 }
             }
+            
         }
 
         // View campgrounds for selected park
@@ -173,13 +171,15 @@ namespace Capstone
 
                 case "3":
                     Console.Clear();
-                    RunMenu();
+                    RunParkMenu();
                     break;
 
                 default:
-                    Console.WriteLine("Please select from the menu.");
                     Console.Clear();
-                    RunMenu();
+                    Console.WriteLine("Invalid response. Please select from the menu.");
+                    RunCampgroundMenu();
+                    
+                    
                     break;
 
 
@@ -273,7 +273,7 @@ namespace Capstone
                 if (yesOrNo.ToUpper() == "N")
                 {
                     Console.Clear();
-                    RunMenu();
+                    RunParkMenu();
                 }
                 else if (yesOrNo.ToUpper() == "Y")
                 {
@@ -341,7 +341,7 @@ namespace Capstone
                     else if (inputContinue == "1")
                     {
                         Console.Clear();
-                        RunMenu();
+                        RunParkMenu();
                     }
 
                
