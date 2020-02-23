@@ -290,6 +290,7 @@ namespace Capstone
 
                 inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number or 0 to start over: ");
 
+
                 if (inputSiteReserve == 0)
                 {
                     SearchReservations();
@@ -306,12 +307,28 @@ namespace Capstone
                 if (id != 0)
                 {
                     Console.WriteLine($"The reservation has been made, and the confirmation id is {id}");
+                    
                 }
                 else
                 {
                     Console.WriteLine("Reservation unsuccessful.");
                     //option to go back
                 }
+                string inputContinue = "";
+                while (inputContinue != "1" && inputContinue != "0")
+                {
+                    inputContinue = CLIHelper.GetString("Enter 1 to return to the main menu or 0 to quit");
+                }
+                if (inputContinue == "0")
+                {
+                    Environment.Exit(0);
+                }
+                else if (inputContinue == "1")
+                {
+                    Console.Clear();
+                    RunMenu();
+                }
+
             }
 
         }
