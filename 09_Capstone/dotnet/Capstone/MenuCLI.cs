@@ -40,6 +40,8 @@ namespace Capstone
         // // Create menu of available parks 
         public void RunParkMenu()
         {
+            Console.WriteLine("View Parks Interface");
+            Console.WriteLine();
             selectedParkId = 0;
             Console.WriteLine("Select a park for further details:");
 
