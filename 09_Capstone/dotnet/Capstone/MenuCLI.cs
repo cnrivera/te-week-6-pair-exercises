@@ -244,11 +244,11 @@ namespace Capstone
                 if (inputStartDate < DateTime.Now)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Arrival/departure dates must be in the future. We do not have time traveling capabilities.\nPlease enter new dates.");
+                    Console.WriteLine("Arrival/departure dates must be in the future. We do not have time traveling capabilities.\nPlease try new dates.");
                 }
                 else if (intDays < 1)
                 {
-                    Console.WriteLine("Departure date must be after arrival date. We do not have time traveling capabilities.\nPlease enter new dates.");
+                    Console.WriteLine("Departure date must be after arrival date. \nPlease try new dates.");
                 }
                 else
                 {
