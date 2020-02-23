@@ -206,11 +206,11 @@ namespace Capstone
             Console.WriteLine();
 
 
-            string inputCampground = CLIHelper.GetString("Select a campground (enter Q to quit)");
+            string inputCampground = CLIHelper.GetString("Select a campground (enter Q to quit and return to main menu)");
 
             if (inputCampground.ToUpper() == "Q")
             {
-                Environment.Exit(0);
+                RunParkMenu();
             }
 
             IList<Campground> campgrounds = campgroundDAO.ReadToListCampground(selectedParkId);
