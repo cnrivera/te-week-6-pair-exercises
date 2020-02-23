@@ -59,14 +59,14 @@ namespace Capstone
 
             Console.WriteLine("Q) Quit");
 
-           parkInput = Console.ReadLine().ToUpper();
-           DisplayParkInfo(parkInput);
+            parkInput = Console.ReadLine().ToUpper();
+            DisplayParkInfo(parkInput);
         }
 
         // Display details for selected park
         public void DisplayParkInfo(string parkInput)
         {
-            
+
             IList<Park> parkSelection = parkDAO.ViewAvailableParks();
             Console.Clear();
 
@@ -124,8 +124,8 @@ namespace Capstone
 
             // Run submenu
             string input = "";
-            while (input != "1" && input !="2") 
-            { 
+            while (input != "1" && input != "2")
+            {
                 Console.WriteLine("Select a Command (1 or 2)");
                 Console.WriteLine("1)\tSearch for Available Reservations");
                 Console.WriteLine("2)\tReturn to Previous Menu");
@@ -211,7 +211,7 @@ namespace Capstone
             }
             Console.WriteLine();
 
-            
+
             string inputCampground = CLIHelper.GetString("Select a campground (enter Q to quit)");
 
             if (inputCampground.ToUpper() == "Q")
@@ -231,11 +231,11 @@ namespace Capstone
 
             catch (Exception ex)
             {
-                
+
                 Console.WriteLine("Not a valid campground; please press any key to try again");
                 Console.ReadLine();
                 SearchReservations();
- 
+
             }
 
             inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
@@ -286,72 +286,70 @@ namespace Capstone
             {
 
                 Console.WriteLine($"Campground\tSiteNo.\tMax Occup.\tAccessible?\tRV Length\tUtilities Available?\tTotal Cost for {intDays} days");
+                List<int> validSiteIds = new List<int>();
                 foreach (Site slot in siteAvailList)
                 {
                     decimal campTotal = selectedCampgroundCost * (decimal)intDays;
                     Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + campTotal);
+                    validSiteIds.Add(slot.SiteId);
+
                 }
 
                 // check input against site numbers in the list
 
 
-                bool inputInvalid = true; 
+                bool inputInvalid = true;
                 while (inputInvalid)
                 {
-                    inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number or 0 to start over: ");
+                    inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number from above list or 0 to start over: ");
                     if (inputSiteReserve == 0)
                     {
                         SearchReservations();
                         break;
                     }
+                    else if (validSiteIds.Contains(inputSiteReserve))
+                    {
+                        inputInvalid = false;
+
+                    }
+                }
+
+                inputNameReserve = CLIHelper.GetString("What name should the reservation be made under?");
+
+                    // Add reservation
+                    int id = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
+
+                    if (id != 0)
+                    {
+                        Console.WriteLine($"The reservation has been made, and the confirmation id is {id}");
+
+                    }
                     else
                     {
-                        foreach (Site slot in siteAvailList)
-                        {
-                            if (slot.SiteNumber == inputSiteReserve)
-                            {
-                                inputInvalid = false;
-                                break;
-                            }
-                        }
+                        Console.WriteLine("Reservation unsuccessful.");
+                        //option to go back
                     }
-                }              
-                
-                inputNameReserve = CLIHelper.GetString("What name should the reservation be made under?");
-                
-                // Add reservation
-                int id = reservationDAO.AddReservation(inputNameReserve, inputSiteReserve, inputStartDate, inputEndDate);
+                    string inputContinue = "";
+                    while (inputContinue != "1" && inputContinue != "0")
+                    {
+                        inputContinue = CLIHelper.GetString("Enter 1 to return to the main menu or 0 to quit");
+                    }
+                    if (inputContinue == "0")
+                    {
+                        Environment.Exit(0);
+                    }
+                    else if (inputContinue == "1")
+                    {
+                        Console.Clear();
+                        RunMenu();
+                    }
 
-                if (id != 0)
-                {
-                    Console.WriteLine($"The reservation has been made, and the confirmation id is {id}");
-                    
-                }
-                else
-                {
-                    Console.WriteLine("Reservation unsuccessful.");
-                    //option to go back
-                }
-                string inputContinue = "";
-                while (inputContinue != "1" && inputContinue != "0")
-                {
-                    inputContinue = CLIHelper.GetString("Enter 1 to return to the main menu or 0 to quit");
-                }
-                if (inputContinue == "0")
-                {
-                    Environment.Exit(0);
-                }
-                else if (inputContinue == "1")
-                {
-                    Console.Clear();
-                    RunMenu();
-                }
+               
 
             }
 
         }
 
     }
-    
 
 }
