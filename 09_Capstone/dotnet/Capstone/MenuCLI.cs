@@ -2,6 +2,7 @@
 using Capstone.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Capstone
 {
@@ -36,6 +37,7 @@ namespace Capstone
             // Start main menu
             RunParkMenu();
         }
+
 
         // // Create menu of available parks 
         public void RunParkMenu()
@@ -78,19 +80,21 @@ namespace Capstone
 
                     selectedParkId = parkSelection[pInput].ParkId;
                     selectedParkName = parkSelection[pInput].Name;
+
+                    string areaWithCommas = $"{parkSelection[pInput].Area:N0} sq km";
                     Console.WriteLine("Park Information Screen");
                     Console.WriteLine();
                     Console.WriteLine(parkSelection[pInput].Name + " National Park");
-                    Console.WriteLine("Location: " + parkSelection[pInput].Location);
-                    Console.WriteLine("Established: " + parkSelection[pInput].EstablishDate);
-                    Console.WriteLine("Area: " + parkSelection[pInput].Area + " sq km");
-                    Console.WriteLine("Annual Visitors: " + parkSelection[pInput].Visitors);
+                    Console.WriteLine("{0,-20}{1,-15}", "Location:", parkSelection[pInput].Location);
+                    Console.WriteLine("{0,-20}{1,-15}", "Established:", parkSelection[pInput].EstablishDate.ToString("MM/dd/yyyy"));
+                    Console.WriteLine("{0,-20}{1,-15}", "Area:", areaWithCommas);
+                    Console.WriteLine("{0,-20}{1,-15:n0}", "Annual Visitors:", parkSelection[pInput].Visitors);
                     Console.WriteLine();
                     Console.WriteLine(parkSelection[pInput].Description);
                     Console.WriteLine();
                     RunCampgroundMenu();
                 }
-
+    
 
                 catch (Exception ex)
                 {
@@ -110,12 +114,14 @@ namespace Capstone
             Console.Clear();
             IList<Campground> campInfo = campgroundDAO.ReadToListCampground(selectedParkId);
             Console.WriteLine("Park Campgrounds");
+            Console.WriteLine();
             Console.WriteLine(selectedParkName + " National Park Campgrounds");
-            Console.WriteLine("Name Open Close Daily Fee");
+            Console.WriteLine();
+            Console.WriteLine("{0,-40}{1,-15}{2,-15}{3,-15}", "Name", "Open", "Close", "Daily Fee");
 
             for (int i = 0; i < campInfo.Count; i++)
             {
-                Console.WriteLine(i + 1 + campInfo[i].Name + " " + campInfo[i].OpenFrom + " " + campInfo[i].OpenTo + " " + campInfo[i].DailyFee);
+                Console.WriteLine("{0,-40}{1,-15}{2,-15}{3,-15:C}", i + 1 + ") "+ campInfo[i].Name, CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(campInfo[i].OpenFrom), CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(campInfo[i].OpenTo), campInfo[i].DailyFee);
             }
             Console.WriteLine();
 
@@ -124,8 +130,8 @@ namespace Capstone
             while (input != "1" && input != "2")
             {
                 Console.WriteLine("Select a Command");
-                Console.WriteLine("1)\tSearch for Available Reservations");
-                Console.WriteLine("2)\tReturn to Previous Menu");
+                Console.WriteLine("\t1) Search for Available Reservations");
+                Console.WriteLine("\t2) Return to Previous Menu");
                 input = CLIHelper.GetString("");
             }
 
@@ -185,20 +191,23 @@ namespace Capstone
             selectedCampgroundId = 0;
             selectedCampgroundName = "";
             selectedCampgroundCost = 0;
-
-
+            
+            
 
             //Search for Available Reservation 
             Console.Clear();
             IList<Campground> campInfo = campgroundDAO.ReadToListCampground(selectedParkId);
             Console.WriteLine("Park Campgrounds");
+            Console.WriteLine();
             Console.WriteLine(selectedParkName + " National Park Campgrounds");
-            Console.WriteLine("Name Open Close Daily Fee");
+            Console.WriteLine();
+            Console.WriteLine("{0,-40}{1,-15}{2,-15}{3,-15}", "Name", "Open", "Close", "Daily Fee");
 
             for (int i = 0; i < campInfo.Count; i++)
             {
-                Console.WriteLine(i + 1 + campInfo[i].Name + " " + campInfo[i].OpenFrom + " " + campInfo[i].OpenTo + " " + campInfo[i].DailyFee);
+                Console.WriteLine("{0,-40}{1,-15}{2,-15}{3,-15:C}", i + 1 + ") " + campInfo[i].Name, CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(campInfo[i].OpenFrom), CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(campInfo[i].OpenTo), campInfo[i].DailyFee);
             }
+
             Console.WriteLine();
 
 
@@ -206,6 +215,7 @@ namespace Capstone
 
             if (inputCampground.ToUpper() == "Q")
             {
+                Console.Clear();
                 RunParkMenu();
             }
             try
@@ -228,9 +238,10 @@ namespace Capstone
 
             bool datesAreValid = false;
             while (!datesAreValid) 
-            { 
-                inputStartDate = CLIHelper.GetDate("What is the arrival date ? mm / dd / yyyy");
-                inputEndDate = CLIHelper.GetDate("What is the departure date ? mm / dd / yyyy");
+            {
+                Console.WriteLine();
+                inputStartDate = CLIHelper.GetDate("What is the arrival date? (mm/dd/yyyy): ");
+                inputEndDate = CLIHelper.GetDate("What is the departure date? (mm/dd/yyyy): ");
 
                 // Calculate number of days for reservation
                 numDays = inputEndDate.Subtract(inputStartDate);
@@ -238,11 +249,13 @@ namespace Capstone
                 if (inputStartDate < DateTime.Now)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Arrival/departure dates must be in the future. We do not have time traveling capabilities.\nPlease try new dates.");
+                    Console.WriteLine("Arrival/departure dates must be in the future. We do not have time-traveling capabilities.\nPlease try new dates.");
                 }
                 else if (intDays < 1)
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Departure date must be after arrival date. \nPlease try new dates.");
+                   
                 }
                 else
                 {
@@ -255,7 +268,9 @@ namespace Capstone
 
             // Display results matching search
             IList<Site> siteAvailList = siteDAO.ReadToListSite(selectedCampgroundId, inputStartDate, inputEndDate);
+            Console.Clear();
             Console.WriteLine("Results Matching Your Search Criteria");
+            Console.WriteLine();
             if (siteAvailList.Count == 0)
             {
 
@@ -291,13 +306,13 @@ namespace Capstone
                 }
                 else
                 {
-
-                    Console.WriteLine($"Campground\tSiteNo.\tMax Occup.\tAccessible?\tRV Length\tUtilities Available?\tTotal Cost for {intDays} days");
+                string totalCost = $"Total Cost for {intDays} Days";
+                Console.WriteLine("{0,-40}{1,-13}{2,-15}{3,-15}{4,-15}{5,-25}{6,-10}", "Campground", "Site No.", "Max Occup.", "Accessible?", "RV Length", "Utilities Available?", totalCost);
                     List<int> validSiteIds = new List<int>();
                     foreach (Site slot in siteAvailList)
                     {
                         decimal campTotal = selectedCampgroundCost * (decimal)intDays;
-                        Console.WriteLine(selectedCampgroundName + "\t" + slot.SiteId + "\t" + slot.MaxOccupancy + "\t" + slot.Accessible + "\t" + slot.MaxRvLength + "\t" + slot.Utilities + "\t" + campTotal);
+                        Console.WriteLine("{0,-40}{1,-13}{2,-15}{3,-15}{4,-15}{5,-25}{6,-10:C}", selectedCampgroundName,  + slot.SiteId, slot.MaxOccupancy, slot.Accessible, slot.MaxRvLength, slot.Utilities, campTotal);
                         validSiteIds.Add(slot.SiteId);
                     }
 
@@ -306,6 +321,7 @@ namespace Capstone
                 bool inputInvalid = true;
                 while (inputInvalid)
                 {
+                    Console.WriteLine();
                     inputSiteReserve = CLIHelper.GetInteger("Which site should be reserved? Enter site number from above list or 0 to start over: ");
                     if (inputSiteReserve == 0)
                     {
@@ -325,6 +341,7 @@ namespace Capstone
 
                 if (id != 0)
                 {
+                    Console.Clear();
                     Console.WriteLine($"The reservation has been made, and the confirmation id is {id}");
 
                 }
